@@ -17,5 +17,9 @@
   "bugs": {
     "url": "https://github.com/iremstalbrand/book-library-API/issues"
   },
-  "homepage": "https://github.com/iremstalbrand/book-library-API#readme"
+  "homepage": "https://github.com/iremstalbrand/book-library-API#readme",
+  "dependencies": {
+    "express": "^5.2.1",
+    "mongodb": "^7.0.0"
+  }
 }
