@@ -12,21 +12,23 @@ app.use(express.json()); //body parts of the req can read as JSON, need for post
 app.post("/books", async (req, res) => {
   const book = req.body;
   if (!book) {
-    return res
-      .status(400)
-      .json({ error: "No book data sent. Use JSON like {'title': 'My Book'}" });
+    return res.status(400).json({
+      error: "Missing or invalid book fields",
+    });
   }
-  const result = addBook(book); //addBook function from DB
+  const result = await addBook(book); //addBook function from DB
   res.status(201).json({ id: result.insertedId });
 });
 
 //ENDPOINT 2 - GET
 
 app.get("/books", async (req, res) => {
-  const books = getAllBooks();
-  res.status(202).json(books);
+  const books = await getAllBooks();
+  res.status(200).json(books);
 });
 
 app.listen(5002, () => {
   console.log("listening on port, 5002");
 });
+
+//ENDPOINT 3 - DELETE

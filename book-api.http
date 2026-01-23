@@ -2,9 +2,10 @@ POST http://localhost:5002/books
 Content-Type: application/json
 
 {
-  "title": "Uğultulu Tepeler",
-  "author": "Emily Brontë",
-  "pages": 416
+  "title": "Great Expectations",
+  "author": "Charles Dickens",
+  "pages": 500,
+  "language": "English"
 }
 
 ###
