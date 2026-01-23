@@ -1,0 +1,11 @@
+POST http://localhost:5002/books
+Content-Type: application/json
+
+{
+  "title": "Uğultulu Tepeler",
+  "author": "Emily Brontë",
+  "pages": 416
+}
+
+###
+GET http://localhost:5002/books
