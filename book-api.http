@@ -2,10 +2,11 @@ POST http://localhost:5002/books
 Content-Type: application/json
 
 {
-  "title": "Great Expectations",
-  "author": "Charles Dickens",
+  "name": "test",
+  "author": "test",
+  "language": "English",
   "pages": 500,
-  "language": "English"
+  "status": "unread"
 }
 
 ###

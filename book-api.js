@@ -10,12 +10,24 @@ app.use(express.json()); //body parts of the req can read as JSON, need for post
 //ENDPOINT 1 - POST
 
 app.post("/books", async (req, res) => {
-  const book = req.body;
-  if (!book) {
+  const { name, author, language, pages, status } = req.body;
+  //required fields
+  if (!name || !author || !language || !pages || !status) {
     return res.status(400).json({
-      error: "Missing or invalid book fields",
+      error:
+        "Missing or invalid book fields:  name, author, language, pages, status",
     });
   }
+
+  //required status
+  if (status !== "read" && status !== "unread") {
+    return res.status(400).json({
+      error: 'Status must be either "read" or "unread"',
+    });
+  }
+
+  const book = { name, author, language, pages, status };
+
   const result = await addBook(book); //addBook function from DB
   res.status(201).json({ id: result.insertedId });
 });
