@@ -1,0 +1,18 @@
+POST http://localhost:5002/books
+Content-Type: application/json
+
+{
+  "name": "Test6",
+  "author": "Test",
+  "language": "English",
+  "pages": 1000,
+  "status": "unread"
+}
+
+###
+GET http://localhost:5002/books
+
+###
+
+DELETE http://localhost:5002/books/697b5eac7e9868d72d325928
+
