@@ -14,12 +14,12 @@ async function connectDatabase() {
 
 async function addBook(book) {
   const db = await connectDatabase();
-  return db.collection("books").insertOne(book); //I have the books collection, and adding document to that collection
+  return db.collection("books").insertOne(book);
 }
 
-async function deleteBookbyId(id) {
+async function deleteBookById(id) {
   const db = await connectDatabase();
-  return db.collection("books").deleteOne({ _id: new ObjectId(id) }); //filter can be name, id, etc.
+  return db.collection("books").deleteOne({ _id: new ObjectId(id) });
 }
 
 async function getAllBooks() {
@@ -27,4 +27,4 @@ async function getAllBooks() {
   return db.collection("books").find().toArray();
 }
 
-module.exports = { addBook, deleteBookbyId, getAllBooks };
+module.exports = { addBook, deleteBookById, getAllBooks };

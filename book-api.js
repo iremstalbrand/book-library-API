@@ -1,14 +1,12 @@
 console.log("TEST TEST!");
 
 const express = require("express"); //get express
-
-const { addBook, deleteBookbyId, getAllBooks } = require("./database.js"); //get the function from database.js
-
+const { ObjectId } = require("mongodb");
+const { addBook, deleteBookById, getAllBooks } = require("./database.js"); //get the function from database.js
 const app = express(); //start express
 app.use(express.json()); //body parts of the req can read as JSON, need for post,put etc. from json data to json object
 
 //ADD BOOKS ---> POST
-
 app.post("/books", async (req, res) => {
   const { name, author, language, pages, status } = req.body;
   //required fields
@@ -33,15 +31,19 @@ app.post("/books", async (req, res) => {
 });
 
 //DELETE BOOKS ---> DELETE
-
 app.delete("/books/:id", async (req, res) => {
   const { id } = req.params;
-  await deleteBookbyId(id);
-  res.status(200).json();
+  if (!ObjectId.isValid(id)) {
+    return res.status(400).json({
+      error: "Invalid ID format. ID must be a 24-character hexadecimal string",
+    });
+  }
+
+  await deleteBookById(id);
+  res.status(204).send();
 });
 
 //LIST BOOKS ---> GET
-
 app.get("/books", async (req, res) => {
   const books = await getAllBooks();
   console.log("flower");
