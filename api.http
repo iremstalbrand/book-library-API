@@ -10,9 +10,9 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:5002/books?language=english&status=read
+GET http://localhost:5002/books?language=turkish
 
 ###
 
-DELETE http://localhost:5002/books/697cc2379cafac6fd03cbd86
+DELETE http://localhost:5002/books/697f629677f0ad02881974bd
 

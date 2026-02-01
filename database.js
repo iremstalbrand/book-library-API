@@ -1,3 +1,4 @@
+console.log("DATABASE.JS LOADED");
 const { MongoClient, ObjectId } = require("mongodb");
 const client = new MongoClient("mongodb://localhost:27017");
 let db;
@@ -27,4 +28,4 @@ async function getBooks(filters = {}) {
   return db.collection("books").find(filters).toArray();
 }
 
-module.exports = { addBook, deleteBookById, getBooks };
+module.exports = { addBook, deleteBookById, getBooks, connectDatabase };

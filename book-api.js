@@ -2,13 +2,19 @@ console.log("TEST TEST!");
 
 const express = require("express"); //get express
 const { ObjectId } = require("mongodb");
-const { addBook, deleteBookById, getBooks } = require("./database.js"); //get the function from database.js
+const {
+  addBook,
+  deleteBookById,
+  getBooks,
+  connectDatabase,
+} = require("./database.js"); //get the function from database.js
 const app = express(); //start express
 app.use(express.json()); //body parts of the req can read as JSON, need for post,put etc. from json data to json object
 
 //ADD BOOKS ---> POST
 app.post("/books", async (req, res) => {
   const { name, author, language, pages, status } = req.body;
+
   //required fields
   if (!name || !author || !language || !pages || !status) {
     return res.status(400).json({
@@ -24,6 +30,13 @@ app.post("/books", async (req, res) => {
     });
   }
 
+  const db = await connectDatabase();
+
+  //check if the book is exist
+  const existing = await db.collection("books").findOne({ name, author });
+  if (existing) {
+    return res.status(409).json({ error: "Book already exist" });
+  }
   const book = { name, author, language, pages, status };
 
   const result = await addBook(book); //addBook function from DB
