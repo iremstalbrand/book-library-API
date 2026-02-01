@@ -22,9 +22,9 @@ async function deleteBookById(id) {
   return db.collection("books").deleteOne({ _id: new ObjectId(id) });
 }
 
-async function getAllBooks() {
+async function getBooks(filters = {}) {
   const db = await connectDatabase();
-  return db.collection("books").find().toArray();
+  return db.collection("books").find(filters).toArray();
 }
 
-module.exports = { addBook, deleteBookById, getAllBooks };
+module.exports = { addBook, deleteBookById, getBooks };
