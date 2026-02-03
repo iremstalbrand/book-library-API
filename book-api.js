@@ -7,6 +7,7 @@ const {
   deleteBookById,
   getBooks,
   connectDatabase,
+  updateBookStatus,
 } = require("./database.js"); //get the function from database.js
 const app = express(); //start express
 app.use(express.json()); //body parts of the req can read as JSON, need for post,put etc. from json data to json object
@@ -72,6 +73,20 @@ app.get("/books", async (req, res) => {
 });
 
 //UPDATE READ STATUS --> PATCH
+app.patch("/books/:id/status", async (req, res) => {
+  const { id } = req.params;
+  if (!ObjectId.isValid(id)) {
+    return res.status(400).json({ error: "Invalid id" });
+  }
+
+  const newStatus = await updateBookStatus(id);
+
+  if (!newStatus) {
+    return res.status(404).json({ error: "Book not found" });
+  }
+
+  res.status(200).json({ status: newStatus });
+});
 
 app.listen(5002, () => {
   console.log("listening on port, 5002");

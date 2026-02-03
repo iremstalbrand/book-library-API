@@ -27,5 +27,27 @@ async function getBooks(filters = {}) {
   const db = await connectDatabase();
   return db.collection("books").find(filters).toArray();
 }
+async function updateBookStatus(id) {
+  const db = await connectDatabase();
+  const book = await db.collection("books").findOne({ _id: new ObjectId(id) });
+  if (!book) return null;
+  let newStatus;
 
-module.exports = { addBook, deleteBookById, getBooks, connectDatabase };
+  if (book.status === "read") {
+    newStatus = "unread";
+  } else {
+    newStatus = "read";
+  }
+
+  await db
+    .collection("books")
+    .updateOne({ _id: new ObjectId(id) }, { $set: { status: newStatus } });
+  return newStatus;
+}
+module.exports = {
+  addBook,
+  deleteBookById,
+  getBooks,
+  connectDatabase,
+  updateBookStatus,
+};

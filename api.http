@@ -2,17 +2,19 @@ POST http://localhost:5002/books
 Content-Type: application/json
 
 {
-  "name": "Engeregin Gozu",
-  "author": "Zulfu Livaneli",
-  "language": "Turkish",
-  "pages": 168,
+  "name": "Test",
+  "author": "Test",
+  "language": "English",
+  "pages": 200,
   "status": "read"
 }
 
 ###
-GET http://localhost:5002/books?language=turkish
+GET http://localhost:5002/books
 
 ###
 
 DELETE http://localhost:5002/books/697f629677f0ad02881974bd
 
+###
+PATCH http://localhost:5002/books/111f629677f0ad02881974bd/status
