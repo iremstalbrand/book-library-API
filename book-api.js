@@ -8,7 +8,7 @@ const {
   getBooks,
   connectDatabase,
   updateBookStatus,
-} = require("./database.js"); //get the function from database.js
+} = require("./database.js"); //get the functions from database.js
 const app = express(); //start express
 app.use(express.json()); //body parts of the req can read as JSON, need for post,put etc. from json data to json object
 
@@ -21,6 +21,22 @@ app.post("/books", async (req, res) => {
     return res.status(400).json({
       error:
         "Missing or invalid book fields:  name, author, language, pages, status",
+    });
+  }
+
+  //validation
+  if (
+    typeof name !== "string" ||
+    !name.trim() ||
+    typeof author !== "string" ||
+    !author.trim() ||
+    typeof language !== "string" ||
+    !language.trim() ||
+    typeof pages !== "number" ||
+    pages <= 0
+  ) {
+    return res.status(400).json({
+      error: "Invalid or missing book fields",
     });
   }
 
@@ -38,9 +54,9 @@ app.post("/books", async (req, res) => {
   if (existing) {
     return res.status(409).json({ error: "Book already exist" });
   }
-  const book = { name, author, language, pages, status };
 
-  const result = await addBook(book); //addBook function from DB
+  const book = { name, author, language, pages, status };
+  const result = await addBook(book);
   res.status(201).json({ id: result.insertedId });
 });
 
@@ -80,7 +96,6 @@ app.patch("/books/:id/status", async (req, res) => {
   }
 
   const newStatus = await updateBookStatus(id);
-
   if (!newStatus) {
     return res.status(404).json({ error: "Book not found" });
   }
