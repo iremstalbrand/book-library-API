@@ -41,10 +41,21 @@ async function updateBookStatus(id) {
     .updateOne({ _id: new ObjectId(id) }, { $set: { status: newStatus } });
   return newStatus;
 }
+
+async function addReview(id, review) {
+  const db = await connectDatabase();
+  return db.collection("books").updateOne(
+    { _id: new ObjectId(id) },
+    {
+      $push: { reviews: review },
+    },
+  );
+}
 module.exports = {
   addBook,
   deleteBookById,
   getBooks,
   connectDatabase,
   updateBookStatus,
+  addReview,
 };

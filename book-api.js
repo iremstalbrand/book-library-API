@@ -1,4 +1,4 @@
-const express = require("express"); //get express
+const express = require("express");
 const { ObjectId } = require("mongodb");
 const {
   addBook,
@@ -6,9 +6,10 @@ const {
   getBooks,
   connectDatabase,
   updateBookStatus,
-} = require("./database.js"); //get the functions from database.js
-const app = express(); //start express
-app.use(express.json()); //body parts of the req can read as JSON, need for post,put etc. from json data to json object
+  addReview,
+} = require("./database.js");
+const app = express();
+app.use(express.json()); //body parts of the req can read as JSON, need for post,put etc. from json data to json object!!
 
 //ADD BOOKS ---> POST
 app.post("/books", async (req, res) => {
@@ -53,7 +54,6 @@ app.post("/books", async (req, res) => {
     if (existing) {
       return res.status(409).json({ error: "Book already exist" });
     }
-
     const book = { name, author, language, pages, status };
     const result = await addBook(book);
     res.status(201).json({ id: result.insertedId });
@@ -67,6 +67,7 @@ app.post("/books", async (req, res) => {
 app.delete("/books/:id", async (req, res) => {
   try {
     const { id } = req.params;
+    //validation
     if (!ObjectId.isValid(id)) {
       return res.status(400).json({
         error:
@@ -75,7 +76,7 @@ app.delete("/books/:id", async (req, res) => {
     }
 
     const result = await deleteBookById(id);
-
+    //if no book found
     if (result.deletedCount === 0) {
       return res.status(404).json({ error: "Book not found" });
     }
@@ -92,7 +93,7 @@ app.get("/books", async (req, res) => {
     const { language, author, status } = req.query;
 
     const filters = {};
-
+    //apply filters
     if (language) filters.language = { $regex: language, $options: "i" };
     if (author) filters.author = { $regex: author, $options: "i" };
     if (status) filters.status = status;
@@ -114,6 +115,7 @@ app.patch("/books/:id/status", async (req, res) => {
     }
 
     const newStatus = await updateBookStatus(id);
+    //if no book found
     if (!newStatus) {
       return res.status(404).json({ error: "Book not found" });
     }
@@ -125,6 +127,65 @@ app.patch("/books/:id/status", async (req, res) => {
   }
 });
 
+//ADD REVIEW --> POST
+app.post("/books/:id/reviews", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { rating, comment } = req.body;
+
+    //required fields
+    if (!rating || !comment) {
+      return res.status(400).json({
+        error: "Missing review fields: rating, comment",
+      });
+    }
+    //validation
+    if (typeof rating !== "number" || rating < 1 || rating > 5) {
+      return res.status(400).json({
+        error: "Rating must be a number between 1 and 5",
+      });
+    }
+    if (typeof comment !== "string" || !comment.trim()) {
+      return res.status(400).json({
+        error: "Comment must be a non-empty string",
+      });
+    }
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).json({
+        error:
+          "Invalid ID format. ID must be a 24-character hexadecimal string",
+      });
+    }
+    //check if the book exists
+    const db = await connectDatabase();
+    const book = await db
+      .collection("books")
+      .findOne({ _id: new ObjectId(id) });
+
+    if (!book) {
+      return res.status(404).json({ error: "Book not found" });
+    }
+    //add or update review
+    const review = { rating, comment, date: new Date() };
+    if (book.reviews && book.reviews.length > 0) {
+      await db
+        .collection("books")
+        .updateOne(
+          { _id: new ObjectId(id) },
+          { $set: { "reviews.0": review } },
+        );
+      return res.status(200).json({ message: "Review updated successfully" });
+    }
+    await addReview(id, review);
+
+    res.status(201).json({ message: "Review added successfully" });
+  } catch (error) {
+    console.error("Error adding review:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+//START THE SERVER!!
 app.listen(5002, () => {
   console.log("listening on port, 5002");
 });

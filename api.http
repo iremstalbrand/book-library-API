@@ -2,21 +2,26 @@ POST http://localhost:5002/books
 Content-Type: application/json
 
 {
-  "name": "test",
+  "name": "TEST",
   "author": "test",
   "language": "english",
   "pages": 500,
   "status": "read"
 }
+###
+POST http://localhost:5002/books/697f488607ef490af2c1e2f5/reviews
+Content-Type: application/json
+
+{"rating":5,"comment":"Amazing book!"}
 
 ###
-GET http://localhost:5002/books/author
+GET http://localhost:5002/books
 
 ###
 GET http://localhost:5002/books?language=english&status=read
 ###
 
-DELETE http://localhost:5002/books/698226a5b30d9b6154e9ca18
+DELETE http://localhost:5002/books/6983bc31e1e64ab3bb19b755
 
 ###
 PATCH http://localhost:5002/books/111f629677f0ad02881974bd/status
