@@ -29,13 +29,13 @@ Add, list, update, review, and delete books stored in MongoDB.
 
 ## Endpoints
 
-| Method | Endpoint             | Description                 | Query / Body                 | Example                       |
-| ------ | -------------------- | --------------------------- | ---------------------------- | ----------------------------- |
-| POST   | `/books`             | Add a new book              | JSON body                    | `POST /books`                 |
-| GET    | `/books`             | List all books              | `?language=&author=&status=` | `GET /books?status=read`      |
-| PATCH  | `/books/:id/status`  | Toggle read / unread status | –                            | `PATCH /books/BOOK_ID/status` |
-| POST   | `/books/:id/reviews` | Add or update a review      | JSON body                    | `POST /books/BOOK_ID/reviews` |
-| DELETE | `/books/:id`         | Delete a book               | –                            | `DELETE /books/BOOK_ID`       |
+| Method | Endpoint             | Description                 | Example                       |
+| ------ | -------------------- | --------------------------- | ----------------------------- |
+| POST   | `/books`             | Add a new book              | `POST /books`                 |
+| GET    | `/books`             | List all books with filters | `GET /books?status=read`      |
+| PATCH  | `/books/:id/status`  | Toggle read / unread status | `PATCH /books/BOOK_ID/status` |
+| POST   | `/books/:id/reviews` | Add or update a review      | `POST /books/BOOK_ID/reviews` |
+| DELETE | `/books/:id`         | Delete a book               | `DELETE /books/BOOK_ID`       |
 
 ---
 
