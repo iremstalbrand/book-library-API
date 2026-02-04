@@ -10,7 +10,7 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:5002/books
+GET http://localhost:5002/books/author
 
 ###
 GET http://localhost:5002/books?language=english&status=read

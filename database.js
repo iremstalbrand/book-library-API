@@ -1,4 +1,3 @@
-console.log("DATABASE.JS LOADED");
 const { MongoClient, ObjectId } = require("mongodb");
 const client = new MongoClient("mongodb://localhost:27017");
 let db;
