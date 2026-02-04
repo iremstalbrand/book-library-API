@@ -39,15 +39,6 @@ Add, list, update, review, and delete books stored in MongoDB.
 
 ---
 
-### DELETE /books/:id
-
-Deletes a book by its ID.
-
-**Responses**
-
-- `204 No Content` – Book deleted successfully
-- `404 Not Found` – Book not found
-
 ## Request Body Examples
 
 ### POST /books
