@@ -69,7 +69,11 @@ app.delete("/books/:id", async (req, res) => {
     });
   }
 
-  await deleteBookById(id);
+  const result = await deleteBookById(id);
+
+  if (result.deletedCount === 0) {
+    return res.status(404).json({ error: "Book not found" });
+  }
   res.status(204).send();
 });
 

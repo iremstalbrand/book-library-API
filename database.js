@@ -3,8 +3,6 @@ const { MongoClient, ObjectId } = require("mongodb");
 const client = new MongoClient("mongodb://localhost:27017");
 let db;
 
-//console.log("TEST TEST!");
-
 async function connectDatabase() {
   if (!db) {
     await client.connect(); //connects with mongoDB

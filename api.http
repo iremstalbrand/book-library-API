@@ -2,11 +2,11 @@ POST http://localhost:5002/books
 Content-Type: application/json
 
 {
-  "name": "kkjk",
-  "author": "est",
-  "language": "nglish",
+  "name": "test",
+  "author": "test",
+  "language": "english",
   "pages": 500,
-  "status": "Read"
+  "status": "read"
 }
 
 ###
@@ -16,7 +16,7 @@ GET http://localhost:5002/books
 GET http://localhost:5002/books?language=english&status=read
 ###
 
-DELETE http://localhost:5002/books/69821236cf92cc354959afec
+DELETE http://localhost:5002/books/698226a5b30d9b6154e9ca18
 
 ###
 PATCH http://localhost:5002/books/111f629677f0ad02881974bd/status
