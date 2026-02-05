@@ -2,17 +2,17 @@ POST http://localhost:5002/books
 Content-Type: application/json
 
 {
-  "name": "TEST",
-  "author": "test",
-  "language": "english",
-  "pages": 500,
+  "name": "1984",
+  "author": "George Orwell",
+  "language": "English",
+  "pages": 328,
   "status": "read"
 }
 ###
-POST http://localhost:5002/books/697f488607ef490af2c1e2f5/reviews
+POST http://localhost:5002/books/6985018dec2756516c72f5af/reviews
 Content-Type: application/json
 
-{"rating":5,"comment":"Amazing book!"}
+{"rating":1,"comment":"Nejjj!"}
 
 ###
 GET http://localhost:5002/books
@@ -21,7 +21,7 @@ GET http://localhost:5002/books
 GET http://localhost:5002/books?language=english&status=read
 ###
 
-DELETE http://localhost:5002/books/6983bc31e1e64ab3bb19b755
+DELETE http://localhost:5002/books/6983bf021a8fa6bd24059d19
 
 ###
-PATCH http://localhost:5002/books/111f629677f0ad02881974bd/status
+PATCH http://localhost:5002/books/697f488607ef490af2c1e2f5/status

@@ -54,7 +54,7 @@ Add, list, update, review, and delete books stored in MongoDB.
 ```json
 {
   "name": "1984",
-  "author": "Orwell",
+  "author": "George Orwell",
   "language": "English",
   "pages": 328,
   "status": "read"
