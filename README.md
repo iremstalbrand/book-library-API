@@ -1,7 +1,11 @@
-# Book-Library-API
+# 📚Book-Library-API
 
-A personal REST API for tracking and managing your books.
-Add, list, update, review, and delete books stored in MongoDB.
+A REST API for managing a personal book collection. Built with Node.js, Express, and MongoDB.
+
+## Overview 
+
+I wanted a simple way to keep track of the books I've read, what I thought about them, which ones I still need to finish, and being able to filter by language or author without scrolling through a messy list, so I designed a REST API that solves this by providing structured endpoints for storing books, managing read status, writing reviews, and filtering collections by language, author, or status.
+
 
 ## Prerequisites
 
@@ -73,7 +77,13 @@ Add, list, update, review, and delete books stored in MongoDB.
 | 409  | Conflict              | Duplicate book             |
 | 500  | Internal Server Error | Server error               |
 
+
+## What I Learned
+
+This was my first full backend project. Building it from scratch helped me understand how REST APIs actually work beyond tutorials, designing routes, structuring schemas with nested subdocuments, handling edge cases, and returning meaningful errors instead of generic 500s.
+
 ## Future Improvements
 
 - Add admin authentication and user roles
 - Implement JWT-based authentication for secure access
+- A React frontend to visualize the library
