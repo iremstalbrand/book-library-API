@@ -1,3 +1,14 @@
+POST http://localhost:5002/auth/register
+Content-Type: application/json
+
+{
+  "email": "test@test.com",
+  "password": "test1234",
+  "name": "Test User"
+}
+
+###
+
 POST http://localhost:5002/books
 Content-Type: application/json
 

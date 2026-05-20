@@ -5,6 +5,7 @@
   "main": "book-api.js",
   "dependencies": {
     "accepts": "^2.0.0",
+    "bcrypt": "^6.0.0",
     "body-parser": "^2.2.2",
     "bson": "^7.1.1",
     "bytes": "^3.1.2",
@@ -39,6 +40,7 @@
     "inherits": "^2.0.4",
     "ipaddr.js": "^1.9.1",
     "is-promise": "^4.0.0",
+    "jsonwebtoken": "^9.0.3",
     "math-intrinsics": "^1.1.0",
     "media-typer": "^1.1.0",
     "memory-pager": "^1.5.0",
@@ -93,6 +95,5 @@
   "bugs": {
     "url": "https://github.com/iremstalbrand/book-library-API/issues"
   },
-  "homepage": "https://github.com/iremstalbrand/book-library-API#readme",
-  "devDependencies": {}
+  "homepage": "https://github.com/iremstalbrand/book-library-API#readme"
 }

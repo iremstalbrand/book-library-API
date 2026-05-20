@@ -1,5 +1,6 @@
 const express = require("express");
 const { ObjectId } = require("mongodb");
+const bcrypt = require("bcrypt");
 const {
   addBook,
   deleteBookById,
@@ -7,9 +8,68 @@ const {
   connectDatabase,
   updateBookStatus,
   addReview,
+  createUser,
+  findUserByEmail,
 } = require("./database.js");
 const app = express();
 app.use(express.json()); //body parts of the req can read as JSON, need for post,put etc. from json data to json object!!
+
+//REGISTER USER --> POST
+app.post("/auth/register", async (req, res) => {
+  try {
+    const { email, password, name } = req.body;
+
+    // required fields
+    if (!email || !password || !name) {
+      return res.status(400).json({
+        error: "Missing fields: email, password, name",
+      });
+    }
+
+    // validation
+    if (
+      typeof email !== "string" ||
+      !email.trim() ||
+      typeof password !== "string" ||
+      typeof name !== "string" ||
+      !name.trim()
+    ) {
+      return res.status(400).json({ error: "Invalid field types" });
+    }
+
+    if (password.length < 8) {
+      return res.status(400).json({
+        error: "Password must be at least 8 characters",
+      });
+    }
+
+    // check if email is already registered
+    const existing = await findUserByEmail(email);
+    if (existing) {
+      return res.status(409).json({ error: "Email already registered" });
+    }
+
+    // hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // create user
+    const result = await createUser({
+      email,
+      password: hashedPassword,
+      name,
+      createdAt: new Date(),
+    });
+
+    res.status(201).json({
+      id: result.insertedId,
+      email,
+      name,
+    });
+  } catch (error) {
+    console.error("Error registering user:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 //ADD BOOKS ---> POST
 app.post("/books", async (req, res) => {
@@ -184,6 +244,7 @@ app.post("/books/:id/reviews", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
 //START THE SERVER!!
 app.listen(5002, () => {
   console.log("listening on port, 5002");

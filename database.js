@@ -51,6 +51,17 @@ async function addReview(id, review) {
     },
   );
 }
+
+async function createUser(user) {
+  const db = await connectDatabase();
+  return db.collection("users").insertOne(user);
+}
+
+async function findUserByEmail(email) {
+  const db = await connectDatabase();
+  return db.collection("users").findOne({ email });
+}
+
 module.exports = {
   addBook,
   deleteBookById,
@@ -58,4 +69,6 @@ module.exports = {
   connectDatabase,
   updateBookStatus,
   addReview,
+  createUser,
+  findUserByEmail,
 };
