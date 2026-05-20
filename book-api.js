@@ -1,6 +1,8 @@
+require("dotenv").config();
 const express = require("express");
 const { ObjectId } = require("mongodb");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const {
   addBook,
   deleteBookById,
@@ -11,6 +13,9 @@ const {
   createUser,
   findUserByEmail,
 } = require("./database.js");
+
+const JWT_SECRET = process.env.JWT_SECRET;
+
 const app = express();
 app.use(express.json()); //body parts of the req can read as JSON, need for post,put etc. from json data to json object!!
 
@@ -67,6 +72,58 @@ app.post("/auth/register", async (req, res) => {
     });
   } catch (error) {
     console.error("Error registering user:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+//LOGIN USER --> POST
+app.post("/auth/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // required fields
+    if (!email || !password) {
+      return res.status(400).json({
+        error: "Missing fields: email, password",
+      });
+    }
+
+    // validation
+    if (
+      typeof email !== "string" ||
+      !email.trim() ||
+      typeof password !== "string"
+    ) {
+      return res.status(400).json({ error: "Invalid field types" });
+    }
+
+    // find user by email
+    const user = await findUserByEmail(email);
+    if (!user) {
+      return res.status(401).json({ error: "Invalid email or password" });
+    }
+
+    // compare password
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) {
+      return res.status(401).json({ error: "Invalid email or password" });
+    }
+
+    // success - generate JWT
+    const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
+      expiresIn: "7d",
+    });
+
+    res.status(200).json({
+      token,
+      user: {
+        id: user._id,
+        email: user.email,
+        name: user.name,
+      },
+    });
+  } catch (error) {
+    console.error("Error logging in:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
