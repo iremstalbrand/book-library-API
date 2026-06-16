@@ -1,4 +1,5 @@
 require("dotenv").config();
+const authMiddleware = require("./middleware/authMiddleware");
 const express = require("express");
 const { ObjectId } = require("mongodb");
 const bcrypt = require("bcrypt");
@@ -20,7 +21,7 @@ const app = express();
 app.use(express.json()); //body parts of the req can read as JSON, need for post,put etc. from json data to json object!!
 
 //REGISTER USER --> POST
-app.post("/auth/register", async (req, res) => {
+app.post("/auth/register", authMiddleware, async (req, res) => {
   try {
     const { email, password, name } = req.body;
 
@@ -129,7 +130,7 @@ app.post("/auth/login", async (req, res) => {
 });
 
 //ADD BOOKS ---> POST
-app.post("/books", async (req, res) => {
+app.post("/books", authMiddleware, async (req, res) => {
   try {
     const { name, author, language, pages, status } = req.body;
 
@@ -167,11 +168,20 @@ app.post("/books", async (req, res) => {
     const db = await connectDatabase();
 
     //check if the book is exist
-    const existing = await db.collection("books").findOne({ name, author });
+    const existing = await db
+      .collection("books")
+      .findOne({ name, author, userId: new ObjectId(req.user.id) });
     if (existing) {
       return res.status(409).json({ error: "Book already exist" });
     }
-    const book = { name, author, language, pages, status };
+    const book = {
+      name,
+      author,
+      language,
+      pages,
+      status,
+      userId: new ObjectId(req.user.id),
+    };
     const result = await addBook(book);
     res.status(201).json({ id: result.insertedId });
   } catch (error) {
@@ -181,7 +191,7 @@ app.post("/books", async (req, res) => {
 });
 
 //DELETE BOOKS ---> DELETE
-app.delete("/books/:id", async (req, res) => {
+app.delete("/books/:id", authMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
     //validation
@@ -192,7 +202,7 @@ app.delete("/books/:id", async (req, res) => {
       });
     }
 
-    const result = await deleteBookById(id);
+    const result = await deleteBookById(id, req.user.id);
     //if no book found
     if (result.deletedCount === 0) {
       return res.status(404).json({ error: "Book not found" });
@@ -205,11 +215,11 @@ app.delete("/books/:id", async (req, res) => {
 });
 
 //LIST BOOKS ---> GET
-app.get("/books", async (req, res) => {
+app.get("/books", authMiddleware, async (req, res) => {
   try {
     const { language, author, status } = req.query;
 
-    const filters = {};
+    const filters = { userId: new ObjectId(req.user.id) };
     //apply filters
     if (language) filters.language = { $regex: language, $options: "i" };
     if (author) filters.author = { $regex: author, $options: "i" };
@@ -224,14 +234,14 @@ app.get("/books", async (req, res) => {
 });
 
 //UPDATE READ STATUS --> PATCH
-app.patch("/books/:id/status", async (req, res) => {
+app.patch("/books/:id/status", authMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
     if (!ObjectId.isValid(id)) {
       return res.status(400).json({ error: "Invalid id" });
     }
 
-    const newStatus = await updateBookStatus(id);
+    const newStatus = await updateBookStatus(id, req.user.id);
     //if no book found
     if (!newStatus) {
       return res.status(404).json({ error: "Book not found" });
@@ -245,7 +255,7 @@ app.patch("/books/:id/status", async (req, res) => {
 });
 
 //ADD REVIEW --> POST
-app.post("/books/:id/reviews", async (req, res) => {
+app.post("/books/:id/reviews", authMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
     const { rating, comment } = req.body;
@@ -277,7 +287,7 @@ app.post("/books/:id/reviews", async (req, res) => {
     const db = await connectDatabase();
     const book = await db
       .collection("books")
-      .findOne({ _id: new ObjectId(id) });
+      .findOne({ _id: new ObjectId(id), userId: new ObjectId(req.user.id) });
 
     if (!book) {
       return res.status(404).json({ error: "Book not found" });
@@ -288,12 +298,12 @@ app.post("/books/:id/reviews", async (req, res) => {
       await db
         .collection("books")
         .updateOne(
-          { _id: new ObjectId(id) },
+          { _id: new ObjectId(id), userId: new ObjectId(req.user.id) },
           { $set: { "reviews.0": review } },
         );
       return res.status(200).json({ message: "Review updated successfully" });
     }
-    await addReview(id, review);
+    await addReview(id, req.user.id, review);
 
     res.status(201).json({ message: "Review added successfully" });
   } catch (error) {

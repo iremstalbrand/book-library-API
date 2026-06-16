@@ -15,18 +15,22 @@ async function addBook(book) {
   return db.collection("books").insertOne(book);
 }
 
-async function deleteBookById(id) {
+async function deleteBookById(id, userId) {
   const db = await connectDatabase();
-  return db.collection("books").deleteOne({ _id: new ObjectId(id) });
+  return db
+    .collection("books")
+    .deleteOne({ _id: new ObjectId(id), userId: new ObjectId(userId) });
 }
 
 async function getBooks(filters = {}) {
   const db = await connectDatabase();
   return db.collection("books").find(filters).toArray();
 }
-async function updateBookStatus(id) {
+async function updateBookStatus(id, userId) {
   const db = await connectDatabase();
-  const book = await db.collection("books").findOne({ _id: new ObjectId(id) });
+  const book = await db
+    .collection("books")
+    .findOne({ _id: new ObjectId(id), userId: new ObjectId(userId) });
   if (!book) return null;
   let newStatus;
 
@@ -38,14 +42,17 @@ async function updateBookStatus(id) {
 
   await db
     .collection("books")
-    .updateOne({ _id: new ObjectId(id) }, { $set: { status: newStatus } });
+    .updateOne(
+      { _id: new ObjectId(id), userId: new ObjectId(userId) },
+      { $set: { status: newStatus } },
+    );
   return newStatus;
 }
 
-async function addReview(id, review) {
+async function addReview(id, userId, review) {
   const db = await connectDatabase();
   return db.collection("books").updateOne(
-    { _id: new ObjectId(id) },
+    { _id: new ObjectId(id), userId: new ObjectId(userId) },
     {
       $push: { reviews: review },
     },

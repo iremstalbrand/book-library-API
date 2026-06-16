@@ -7,15 +7,6 @@ Content-Type: application/json
   "password": "test1234"
 }
 
-### Test 2
-POST http://localhost:5002/auth/login
-Content-Type: application/json
-
-{
-  "email": "test@test.com",
-  "password": "wrongpassword"
-}
-
 ### Test 3
 POST http://localhost:5002/auth/login
 Content-Type: application/json
@@ -23,6 +14,20 @@ Content-Type: application/json
 {
   "email": "yok@yok.com",
   "password": "test1234"
+}
+
+###
+
+POST http://localhost:5002/books
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YTBjY2Q1YTE1Yzk2ZWM3ZjE2YjFmZWQiLCJpYXQiOjE3ODExOTE1NTMsImV4cCI6MTc4MTc5NjM1M30.nGKF2ZMDyz-kxFLvRpMNwDFu8L-Nm0PBndGOlkJyl4I
+Content-Type: application/json
+
+{
+  "name": "GOODD",
+  "author": "Test Author",
+  "language": "English",
+  "pages": 100,
+  "status": "unread"
 }
 
 ###
@@ -65,3 +70,25 @@ DELETE http://localhost:5002/books/6983bf021a8fa6bd24059d19
 
 ###
 PATCH http://localhost:5002/books/697f488607ef490af2c1e2f5/status
+
+###
+GET http://localhost:5002/books
+Authorization:  Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YTBjY2Q1YTE1Yzk2ZWM3ZjE2YjFmZWQiLCJpYXQiOjE3ODExOTE1NTMsImV4cCI6MTc4MTc5NjM1M30.nGKF2ZMDyz-kxFLvRpMNwDFu8L-Nm0PBndGOlkJyl4I
+
+###
+DELETE http://localhost:5002/books/aaaaaaaaaaaaaaaaaaaaaaaa
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YTBjY2Q1YTE1Yzk2ZWM3ZjE2YjFmZWQiLCJpYXQiOjE3ODE2MzQxODcsImV4cCI6MTc4MjIzODk4N30.wwQQBwLRlBC9s51_8UMJHFIh5RnU9V22W23v9nbXdQA
+
+###
+PATCH http://localhost:5002/books/6a2ad4257c17b4972e47b127/status
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YTBjY2Q1YTE1Yzk2ZWM3ZjE2YjFmZWQiLCJpYXQiOjE3ODE2MzQxODcsImV4cCI6MTc4MjIzODk4N30.wwQQBwLRlBC9s51_8UMJHFIh5RnU9V22W23v9nbXdQA
+
+###
+POST http://localhost:5002/books/6a2ad4257c17b4972e47b127/reviews
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YTBjY2Q1YTE1Yzk2ZWM3ZjE2YjFmZWQiLCJpYXQiOjE3ODE2MzQxODcsImV4cCI6MTc4MjIzODk4N30.wwQQBwLRlBC9s51_8UMJHFIh5RnU9V22W23v9nbXdQA
+Content-Type: application/json
+
+{
+  "rating": 5,
+  "comment": "Harika kitap!"
+}
