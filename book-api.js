@@ -21,7 +21,7 @@ const app = express();
 app.use(express.json()); //body parts of the req can read as JSON, need for post,put etc. from json data to json object!!
 
 //REGISTER USER --> POST
-app.post("/auth/register", authMiddleware, async (req, res) => {
+app.post("/auth/register", async (req, res) => {
   try {
     const { email, password, name } = req.body;
 

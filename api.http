@@ -61,6 +61,9 @@ Content-Type: application/json
 
 ###
 GET http://localhost:5002/books
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YTMxOWVmMjhmY2EwMjA1YmIyMmM4Y2YiLCJpYXQiOjE3ODE2MzY4NTQsImV4cCI6MTc4MjI0MTY1NH0.yxYVuUvetn5cdir1M6eFo6uIY7aS71WP2A6wzOcMWMY
+Content-Type: application/json
+
 
 ###
 GET http://localhost:5002/books?language=english&status=read
@@ -91,4 +94,24 @@ Content-Type: application/json
 {
   "rating": 5,
   "comment": "Harika kitap!"
+}
+
+###
+POST http://localhost:5002/auth/register
+Content-Type: application/json
+
+{
+  "email": "user2@test.com",
+  "password": "user2pass",
+  "name": "User Two"
+}
+
+
+###
+POST http://localhost:5002/auth/login
+Content-Type: application/json
+
+{
+  "email": "user2@test.com",
+  "password": "user2pass"
 }
