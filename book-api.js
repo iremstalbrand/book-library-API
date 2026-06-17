@@ -1,4 +1,5 @@
 require("dotenv").config();
+const cors = require("cors");
 const authMiddleware = require("./middleware/authMiddleware");
 const express = require("express");
 const { ObjectId } = require("mongodb");
@@ -18,6 +19,11 @@ const {
 const JWT_SECRET = process.env.JWT_SECRET;
 
 const app = express();
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+  }),
+);
 app.use(express.json()); //body parts of the req can read as JSON, need for post,put etc. from json data to json object!!
 
 //REGISTER USER --> POST
