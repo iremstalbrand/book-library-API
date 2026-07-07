@@ -138,7 +138,8 @@ app.post("/auth/login", async (req, res) => {
 //ADD BOOKS ---> POST
 app.post("/books", authMiddleware, async (req, res) => {
   try {
-    const { name, author, language, pages, status } = req.body;
+    const { name, author, language, pages, status, googleBookId, coverUrl } =
+      req.body;
 
     //required fields
     if (!name || !author || !language || !pages || !status) {
@@ -171,6 +172,14 @@ app.post("/books", authMiddleware, async (req, res) => {
       });
     }
 
+    //optional field validation
+    if (googleBookId !== undefined && typeof googleBookId !== "string") {
+      return res.status(400).json({ error: "googleBookId must be a string" });
+    }
+    if (coverUrl !== undefined && typeof coverUrl !== "string") {
+      return res.status(400).json({ error: "coverUrl must be a string" });
+    }
+
     const db = await connectDatabase();
 
     //check if the book is exist
@@ -187,6 +196,8 @@ app.post("/books", authMiddleware, async (req, res) => {
       pages,
       status,
       userId: new ObjectId(req.user.id),
+      ...(googleBookId !== undefined && { googleBookId }),
+      ...(coverUrl !== undefined && { coverUrl }),
     };
     const result = await addBook(book);
     res.status(201).json({ id: result.insertedId });
@@ -314,6 +325,60 @@ app.post("/books/:id/reviews", authMiddleware, async (req, res) => {
     res.status(201).json({ message: "Review added successfully" });
   } catch (error) {
     console.error("Error adding review:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+//SEARCH GOOGLE BOOKS ---> GET
+app.get("/search", authMiddleware, async (req, res) => {
+  try {
+    const { q } = req.query;
+
+    if (!q || typeof q !== "string" || !q.trim()) {
+      return res.status(400).json({ error: "Missing or invalid search query" });
+    }
+
+    const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(q)}&maxResults=10&key=${process.env.GOOGLE_BOOKS_API_KEY}`;
+
+    let googleRes;
+    try {
+      googleRes = await fetch(url);
+    } catch (err) {
+      console.error("Google Books API unreachable:", err);
+      return res
+        .status(502)
+        .json({ error: "Could not reach Google Books API" });
+    }
+
+    if (!googleRes.ok) {
+      console.error("Google Books API returned", googleRes.status);
+      return res
+        .status(502)
+        .json({ error: `Google Books API error: ${googleRes.status}` });
+    }
+
+    const data = await googleRes.json();
+
+    const books = (data.items || []).map((item) => {
+      const info = item.volumeInfo || {};
+      const rawThumbnail = info.imageLinks?.thumbnail || null;
+      const coverUrl = rawThumbnail
+        ? rawThumbnail.replace(/^http:/, "https:")
+        : null;
+
+      return {
+        googleBookId: item.id,
+        title: info.title || "Unknown",
+        author: (info.authors && info.authors[0]) || "Unknown",
+        language: info.language || null,
+        pages: info.pageCount || null,
+        coverUrl,
+      };
+    });
+
+    res.status(200).json(books);
+  } catch (error) {
+    console.error("Error searching books:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
